@@ -5,12 +5,13 @@ const initialState = {
 };
 
 const reducer = ( state = initialState, action ) => {
+    // eslint-disable-next-line
     switch ( action.type ) {
         case actionTypes.ADD_PERSON:
             const newPerson = {
                 id: Math.random(), // not really unique but good enough here!
-                name: 'Max',
-                age: Math.floor( Math.random() * 40 )
+                name: action.name,
+                age: action.age
             }
             return {
                 ...state,
