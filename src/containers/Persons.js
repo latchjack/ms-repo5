@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Person from '../components/Person/Person';
 import AddPerson from '../components/AddPerson/AddPerson';
@@ -19,26 +20,46 @@ class Persons extends Component {
         } );
     }
 
-    personDeletedHandler = (personId) => {
-        this.setState( ( prevState ) => {
-            return { persons: prevState.persons.filter(person => person.id !== personId)}
-        } );
-    }
+    // personDeletedHandler = (personId) => {
+    //     this.setState( ( prevState ) => {
+    //         return { persons: prevState.persons.filter(person => person.id !== personId)}
+    //     } );
+    // }
+
+    // function removeItem(array, action) {
+    //     let newArray = array.slice();
+    //     newArray.splice(action.index, 1);
+    //     return newArray;
+    // }
 
     render () {
         return (
             <div>
-                <AddPerson personAdded={this.personAddedHandler} />
-                {this.state.persons.map(person => (
+                <AddPerson personAdded={this.props.onAddPerson} />
+                {this.props.storedResults.map(person => (
                     <Person 
                         key={person.id}
                         name={person.name} 
                         age={person.age} 
-                        clicked={() => this.personDeletedHandler(person.id)}/>
+                        clicked={() => this.props.onRemovePerson(person.id)}/>
                 ))}
             </div>
         );
     }
 }
 
-export default Persons;
+const mapStateToProps = state => {
+    return {
+        prsn: state.prsn.persons,
+        storedResults: state.res.results
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddPerson: () => dispatch({type: 'ADD_PERSON'}),
+        onRemovePerson: () => dispatch({type: 'REMOVE_PERSON'})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Persons);
