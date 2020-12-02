@@ -3,45 +3,20 @@ import { connect } from 'react-redux';
 
 import Person from '../components/Person/Person';
 import AddPerson from '../components/AddPerson/AddPerson';
+import * as actionTypes from '../store/actions';
 
 class Persons extends Component {
-    state = {
-        persons: []
-    }
-
-    personAddedHandler = () => {
-        const newPerson = {
-            id: Math.random(), // not really unique but good enough here!
-            name: 'Max',
-            age: Math.floor( Math.random() * 40 )
-        }
-        this.setState( ( prevState ) => {
-            return { persons: prevState.persons.concat(newPerson)}
-        } );
-    }
-
-    // personDeletedHandler = (personId) => {
-    //     this.setState( ( prevState ) => {
-    //         return { persons: prevState.persons.filter(person => person.id !== personId)}
-    //     } );
-    // }
-
-    // function removeItem(array, action) {
-    //     let newArray = array.slice();
-    //     newArray.splice(action.index, 1);
-    //     return newArray;
-    // }
-
+    
     render () {
         return (
             <div>
-                <AddPerson personAdded={this.props.onAddPerson} />
-                {this.props.storedResults.map(person => (
+                <AddPerson personAdded={this.props.onAddedPerson} />
+                {this.props.prs.map(person => (
                     <Person 
                         key={person.id}
                         name={person.name} 
                         age={person.age} 
-                        clicked={() => this.props.onRemovePerson(person.id)}/>
+                        clicked={() => this.props.onRemovedPerson(person.id)}/>
                 ))}
             </div>
         );
@@ -50,16 +25,15 @@ class Persons extends Component {
 
 const mapStateToProps = state => {
     return {
-        prsn: state.prsn.persons,
-        storedResults: state.res.results
+        prs: state.persons
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddPerson: () => dispatch({type: 'ADD_PERSON'}),
-        onRemovePerson: () => dispatch({type: 'REMOVE_PERSON'})
+        onAddedPerson: () => dispatch({type: actionTypes.ADD_PERSON}),
+        onRemovedPerson: (id) => dispatch({type: actionTypes.REMOVE_PERSON, personId: id})
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Persons);
